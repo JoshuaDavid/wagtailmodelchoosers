@@ -13,12 +13,13 @@ from rest_framework.viewsets import GenericViewSet, ViewSet
 from wagtailmodelchoosers.paginators import GenericModelPaginator
 from wagtailmodelchoosers.utils import get_chooser_options, get_query_keys_map, get_response_keys_map
 from wagtailmodelchoosers.permissions import IsWagtailAdmin
+from wagtailmodelchoosers.permissions import IsRegisteredModelChooserModel
 
 
 class ModelView(ListModelMixin, GenericViewSet):
     pagination_class = GenericModelPaginator
     authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated, IsWagtailAdmin)
+    permission_classes = (IsAuthenticated, IsWagtailAdmin, IsRegisteredModelChooserModel)
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,)
 
     def get_params(self):
