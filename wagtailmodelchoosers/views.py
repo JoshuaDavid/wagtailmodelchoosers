@@ -95,7 +95,7 @@ class ModelView(ListModelMixin, GenericViewSet):
                 'content_type': serializers.StringRelatedField()
             })
 
-        model_serializer = type(class_name, (serializers.ModelSerializer,), serializer_args)
+        model_serializer = type(str(class_name), (serializers.ModelSerializer,), serializer_args)
 
         return model_serializer
 
