@@ -75,6 +75,9 @@ class ModelView(ListModelMixin, GenericViewSet):
         model_name = params.get('model_name')
 
         cls = apps.get_model(app_name, model_name)
+        if hasattr(cls, 'get_model_serializer_class'):
+            return cls.get_model_serializer_class()
+
         return self.build_serializer(cls, model_name)
 
     def build_serializer(self, cls, model_name):
