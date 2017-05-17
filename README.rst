@@ -72,7 +72,17 @@ The ModelChooser and RemoteModelChooser share a similar base configuration and o
             'pk_name': 'uuid',                                       # The primary key name of the model
         }
     }
-    
+
+You can optionally specify the rest-framework serializer that is used to serialize the model by defining ``get_model_serializer_class`` on the model.
+
+.. code:: python
+    class MyModel(models.Model):
+
+        @classmethod
+        def get_model_serializer_class(cls):
+            from myapp.serialziers import MyModelSerializer
+            return MyModelSerializer
+
 In addition, you can customise the mapping of the key of the API, see the configuration key names being used for the `query <https://github.com/springload/wagtailmodelchoosers/blob/c36bb877eef4ac4af6b221f0d7ff7416354754c7/wagtailmodelchoosers/utils.py#L107-L112>`_ and the `response <https://github.com/springload/wagtailmodelchoosers/blob/c36bb877eef4ac4af6b221f0d7ff7416354754c7/wagtailmodelchoosers/utils.py#L115-L123>`_.
 
 
