@@ -50,7 +50,6 @@ class ModelPicker extends React.Component {
 
     this.state = {
       pickerVisible: false,
-      models: [],
       loading: true,
       next: false,
       previous: false,
@@ -59,8 +58,6 @@ class ModelPicker extends React.Component {
       numPages: 0,
       page: 0,
       suggestions: [],
-      suggestionsCount: 0,
-      shouldShowSuggestions: false,
       loadingSuggestions: false,
     };
 
@@ -87,6 +84,7 @@ class ModelPicker extends React.Component {
     this.navigateNext = this.navigateNext.bind(this);
     this.onLoadSuggestions = this.onLoadSuggestions.bind(this);
     this.onValueChange = this.onValueChange.bind(this);
+    this.onClearSearch = this.onClearSearch.bind(this);
     this.onLoadStart = this.onLoadStart.bind(this);
   }
 
@@ -116,9 +114,7 @@ class ModelPicker extends React.Component {
   }
 
   getModels() {
-    const { shouldShowSuggestions, suggestions, models } = this.state;
-
-    return shouldShowSuggestions ? suggestions : models;
+    return this.state.suggestions;
   }
 
   select(pk) {
@@ -152,7 +148,7 @@ class ModelPicker extends React.Component {
     this.setState({
       numPages: numPage,
       page: json.page,
-      models: json.results,
+      suggestions: json.results,
       count: json.count,
       next: json.next,
       previous: json.previous,
@@ -294,9 +290,7 @@ class ModelPicker extends React.Component {
   }
 
   getCount() {
-    const { count, shouldShowSuggestions, suggestionsCount } = this.state;
-
-    return shouldShowSuggestions ? suggestionsCount : count;
+    return this.state.count;
   }
 
   getCountDisplay() {
@@ -313,28 +307,22 @@ class ModelPicker extends React.Component {
 
   getPageDisplay() {
     const { translations } = this.props;
-    const { numPages, page: currentPage, shouldShowSuggestions } = this.state;
+    const { numPages, page: currentPage } = this.state;
 
-    let text;
-    if (shouldShowSuggestions) {
-      const label = tr(STR, translations, 'page');
-      text = `1 / 1 ${label}`;
-    } else {
-      const label = pluralize(STR, translations, 'result', 'results', numPages);
-      text = `${currentPage} / ${numPages} ${label}`;
-    }
+    const label = pluralize(STR, translations, 'result', 'results', numPages);
+    const text = `${currentPage} / ${numPages} ${label}`;
 
     return <span className="admin-modal__pagination">{text}</span>;
   }
 
   getPaginationButtons() {
     const { translations } = this.props;
-    const { next, previous, shouldShowSuggestions } = this.state;
+    const { next, previous } = this.state;
 
     const prevLabel = tr(STR, translations, 'previous');
     const nextLabel = tr(STR, translations, 'next');
-    const prevEnabled = shouldShowSuggestions ? false : !!previous;
-    const nextEnabled = shouldShowSuggestions ? false : !!next;
+    const prevEnabled = !!previous;
+    const nextEnabled = !!next;
 
     return (
       <span>
@@ -353,43 +341,54 @@ class ModelPicker extends React.Component {
   }
 
   navigatePrevious() {
-    const { shouldShowSuggestions, page } = this.state;
+    const { previous, page } = this.state;
 
-    if (shouldShowSuggestions) {
-      return;
+    if (previous) {
+      this.navigate(previous);
+    } else {
+      const url = `${this.getDefaultUrl()}&page=${page - 1}`;
+      this.navigate(url);
     }
-
-    const url = `${this.getDefaultUrl()}&page=${page - 1}`;
-    this.navigate(url);
   }
 
   navigateNext() {
-    const { shouldShowSuggestions, page } = this.state;
+    const { next, page } = this.state;
 
-    if (shouldShowSuggestions) {
-      return;
+    if (next) {
+      this.navigate(next);
+    } else {
+      const url = `${this.getDefaultUrl()}&page=${page + 1}`;
+      this.navigate(url);
     }
-
-    const url = `${this.getDefaultUrl()}&page=${page + 1}`;
-    this.navigate(url);
   }
 
-  onLoadSuggestions(suggestions) {
+  onLoadSuggestions(json) {
     this.setState({
-      suggestions: suggestions,
-      suggestionsCount: suggestions.length,
+      suggestions: json.results,
+      next: json.next,
+      previous: json.previous,
+      page: json.page,
+      count: json.count,
+      numPages: json.num_pages,
       loadingSuggestions: false,
     });
   }
 
-  onValueChange(newValue) {
-    const shouldShowSuggestions = newValue.trim().length > 2;
+  onValueChange() {
 
-    this.setState({
-      shouldShowSuggestions: shouldShowSuggestions,
-    });
   }
 
+  onClearSearch() {
+    this.setState({
+      next: null,
+      previous: null,
+      page: 0,
+      numPages: 0,
+      count: 0,
+      suggestions: [],
+    });
+    this.navigate(this.getDefaultUrl());
+  }
   onLoadStart() {
     this.setState({
       loadingSuggestions: true,
@@ -413,6 +412,7 @@ class ModelPicker extends React.Component {
                 onChange={this.onValueChange}
                 onLoadSuggestions={this.onLoadSuggestions}
                 onLoadStart={this.onLoadStart}
+                onClearSearch={this.onClearSearch}
                 endpoint={endpoint}
                 filter={this.addFilterParams('')}
               />
