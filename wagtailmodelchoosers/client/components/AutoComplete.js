@@ -12,6 +12,7 @@ const propTypes = {
   onLoadSuggestions: PropTypes.func.isRequired,
   onLoadStart: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onClearSearch: PropTypes.func.isRequired,
   endpoint: PropTypes.string.isRequired,
   filter: PropTypes.string,
 };
@@ -43,7 +44,7 @@ class AutoComplete extends Component {
           suggestions: json.results,
           loading: false,
         }, () => {
-          onLoadSuggestions(json.results);
+          onLoadSuggestions(json);
         });
       });
   }
@@ -62,6 +63,10 @@ class AutoComplete extends Component {
     }, () => {
       onChange(newValue);
     });
+
+    if (newValue.length === 0) {
+      this.props.onClearSearch();
+    }
   }
 
   render() {
