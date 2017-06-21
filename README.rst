@@ -83,6 +83,11 @@ You can optionally specify the rest-framework serializer that is used to seriali
             from myapp.serialziers import MyModelSerializer
             return MyModelSerializer
 
+Search fields for the model can be defined on the class via the property `SEARCH_FIELDS`
+.. code:: python
+    class MyModel(models.Model):
+        SEARCH_FIELDS = ('name__istartswith',)
+
 In addition, you can customise the mapping of the key of the API, see the configuration key names being used for the `query <https://github.com/springload/wagtailmodelchoosers/blob/c36bb877eef4ac4af6b221f0d7ff7416354754c7/wagtailmodelchoosers/utils.py#L107-L112>`_ and the `response <https://github.com/springload/wagtailmodelchoosers/blob/c36bb877eef4ac4af6b221f0d7ff7416354754c7/wagtailmodelchoosers/utils.py#L115-L123>`_.
 
 
