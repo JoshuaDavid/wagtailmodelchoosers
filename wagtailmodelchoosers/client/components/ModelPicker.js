@@ -32,6 +32,7 @@ const propTypes = {
   onClose: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   endpoint: PropTypes.string.isRequired,
+  createEndpoint: PropTypes.string.isRequired,
   value: PropTypes.any,
   required: PropTypes.bool.isRequired,
   display: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
@@ -77,6 +78,7 @@ class ModelPicker extends React.Component {
     this.parseValue = this.parseValue.bind(this);
     this.getRow = this.getRow.bind(this);
     this.getCount = this.getCount.bind(this);
+    this.popupCreateLink = this.popupCreateLink.bind(this);
     this.getCountDisplay = this.getCountDisplay.bind(this);
     this.getPageDisplay = this.getPageDisplay.bind(this);
     this.getPaginationButtons = this.getPaginationButtons.bind(this);
@@ -289,6 +291,25 @@ class ModelPicker extends React.Component {
     );
   }
 
+  popupCreateLink(event) {
+    event.preventDefault();
+    window.open(this.props.createEndpoint, 'createModelInstance', 'width=900,height=600,resizable=yes,scrollbars=yes');
+  }
+
+  getCreateLink() {
+    if (this.props.createEndpoint) {
+      return (
+        <a
+          href={this.props.createEndpoint}
+          onClick={this.popupCreateLink}
+          className="admin-modal__create_link button"
+        >
+          Create New
+        </a>
+      );
+    }
+  }
+
   getCount() {
     return this.state.count;
   }
@@ -418,6 +439,7 @@ class ModelPicker extends React.Component {
               />
             </div>
             <div className="admin-modal__action">
+              {this.getCreateLink()}
               {this.getCountDisplay()}
               {this.getPageDisplay()}
               {this.getPaginationButtons()}
