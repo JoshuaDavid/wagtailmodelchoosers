@@ -5,6 +5,8 @@ from django.apps import apps
 from django.forms import widgets
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
+from django.urls.exceptions import NoReverseMatch
+from django.core.urlresolvers import reverse
 
 from wagtail.utils.widgets import WidgetWithScript
 
@@ -80,6 +82,14 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
         from django.core.urlresolvers import reverse
         return reverse('wagtailmodelchoosers_api_model', args=[app, class_name])
 
+   def get_create_endpoint(self):
+        app, class_name = self.get_class_name()
+
+        try:
+            return reverse(('admin:%s_%s_add' % (app, class_name)).lower()) + "?_popup=1"
+        except NoReverseMatch:
+            return None
+
     def get_internal_value(self, value):
         if hasattr(value, 'pk'):
             if isinstance(value.pk, uuid.UUID):
@@ -99,6 +109,7 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
             'pk_name': self.pk_name,
             'required': self.required,
             'initial_display_value': self.get_display_value(value),
+            'createEndpoint': self.get_create_endpoint(),
             'endpoint': self.get_endpoint(),
         }
 

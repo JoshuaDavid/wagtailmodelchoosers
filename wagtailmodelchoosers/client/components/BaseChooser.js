@@ -23,6 +23,7 @@ const propTypes = {
   label: PropTypes.string.isRequired,
   initial_display_value: PropTypes.string.isRequired,
   endpoint: PropTypes.string.isRequired,
+  createEndpoint: PropTypes.string.isRequired,
   value: PropTypes.any,
   required: PropTypes.bool.isRequired,
   display: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
@@ -184,6 +185,7 @@ class BaseChooser extends React.Component {
         {pickerVisible ? (
           <ModelPicker
             url={initialUrl}
+            createEndpoint={this.props.createEndpoint}
             onClose={this.onClose}
             onSelect={this.onSelect}
             {...this.props}

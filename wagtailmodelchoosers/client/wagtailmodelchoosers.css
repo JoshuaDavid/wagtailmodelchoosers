@@ -133,6 +133,11 @@
     /*padding-top: .5rem;*/
 }
 
+.admin-modal__create_link {
+    float: left;
+    margin-left: 10px;
+}
+
 .admin-modal__pagination {
     margin-right: 1.5rem;
     display: inline-block;

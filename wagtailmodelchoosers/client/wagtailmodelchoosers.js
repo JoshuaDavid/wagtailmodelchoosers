@@ -34,6 +34,14 @@ window.wagtailModelChoosers = {};
 window.wagtailModelChoosers.initModelChooser = initModelChooser;
 window.wagtailModelChoosers.initRemoteModelChooser = initRemoteModelChooser;
 
+// Add hooks to close Django Admin AddInstance popups on-save
+window.dismissRelatedLookupPopup = function (win) {
+  win.close();
+};
+window.dismissAddRelatedObjectPopup = function (win) {
+  win.close();
+};
+
 // Add Sources if WagtailDraftail is available.
 if (window.hasOwnProperty('wagtailDraftail')) {
   window.wagtailDraftail.registerSources({ ModelSource, RemoteModelSource })
