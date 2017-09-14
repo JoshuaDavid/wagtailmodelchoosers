@@ -82,7 +82,7 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
         from django.core.urlresolvers import reverse
         return reverse('wagtailmodelchoosers_api_model', args=[app, class_name])
 
-   def get_create_endpoint(self):
+    def get_create_endpoint(self):
         app, class_name = self.get_class_name()
 
         try:
