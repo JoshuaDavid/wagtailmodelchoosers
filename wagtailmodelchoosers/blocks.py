@@ -17,6 +17,7 @@ class ModelChooserBlock(ChooserBlock):
 
         self.chooser = chooser
         self.content_type = options.pop('content_type')
+        self.can_allow_create = options.pop('can_allow_create')
         self.label = options.pop('label', chooser)
         self.display = options.pop('display', 'title')
         self.list_display = options.pop('list_display', list(flatten([self.display])))
@@ -41,6 +42,7 @@ class ModelChooserBlock(ChooserBlock):
             display=self.display,
             list_display=self.list_display,
             filters=self.filters,
+            can_allow_create=self.can_allow_create,
             page_size_param=self.page_size_param,
             page_size=self.page_size,
             pk_name=self.pk_name,

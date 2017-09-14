@@ -27,6 +27,7 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
         self.page_size_param = kwargs.pop('page_size_param', None)
         self.page_size = kwargs.pop('page_size', None)
         self.pk_name = kwargs.pop('pk_name', 'uuid')
+        self.can_allow_create = kwargs.pop('can_allow_create', False)
         self.translations = kwargs.pop('translations', [])
 
         super(ModelChooserWidget, self).__init__(**kwargs)
@@ -83,6 +84,9 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
         return reverse('wagtailmodelchoosers_api_model', args=[app, class_name])
 
     def get_create_endpoint(self):
+        if self.can_allow_create is not True:
+            return None
+
         app, class_name = self.get_class_name()
 
         try:

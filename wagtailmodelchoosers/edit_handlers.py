@@ -30,6 +30,7 @@ class BaseModelChooserPanel(BaseChooserPanel):
                 page_size_param=cls.page_size_param,
                 page_size=cls.page_size,
                 pk_name=cls.pk_name,
+                can_allow_create=cls.can_allow_create,
                 translations=cls.translations,
             )
         }
@@ -49,6 +50,7 @@ class ModelChooserPanel(object):
         self.page_size_param = options.pop('page_size_param', None)
         self.page_size = options.pop('page_size', None)
         self.pk_name = options.pop('pk_name', 'uuid')
+        self.can_allow_create = options.pop('can_allow_create', False)
         self.translations = options.pop('translations', [])
 
     def bind_to_model(self, model):
@@ -62,6 +64,7 @@ class ModelChooserPanel(object):
             'page_size_param': self.page_size_param,
             'page_size': self.page_size,
             'pk_name': self.pk_name,
+            'can_allow_create': self.can_allow_create,
             'translations': self.translations,
         })
 
