@@ -34,8 +34,10 @@ class ModelView(ListModelMixin, GenericViewSet):
         if hasattr(cls, 'SEARCH_FIELDS'):
             queries = [Q(**{search_field: search}) for search_field in cls.SEARCH_FIELDS]
         else:
-            search_fields = [field.name for field in cls._meta.get_fields() if isinstance(field, CharField)]
-            for field in cls._meta.get_fields():
+            search_fields = [
+                field.name for field in cls._meta.get_fields()
+                if isinstance(field, CharField)]
+            for field in search_fields:
                 if isinstance(field, CharField):
                     kwargs = {}
                     param_name = '%s__icontains' % field.name
@@ -63,13 +65,21 @@ class ModelView(ListModelMixin, GenericViewSet):
 
         return queryset
 
+    def do_extra_filter(self, queryset, extra_filter_fields):
+        return queryset.filter(**extra_filter_fields)
+
     def get_queryset(self):
         params = self.get_params()
-        app_name = params.get('app_name')
-        model_name = params.get('model_name')
+        chooser_name = params.get('chooser')
+        chooser = get_chooser_options(chooser_name)
+        app_name, model_name = chooser['content_type'].split('.')
         cls = apps.get_model(app_name, model_name)
 
+        extra_filter_fields = chooser.get('extra_filter_fields')
+
         queryset = cls.objects.all()
+        if extra_filter_fields:
+            queryset = self.do_extra_filter(queryset, extra_filter_fields)
         queryset = self.do_search(cls, queryset)
         queryset = self.do_filter(cls, queryset)
 
@@ -77,10 +87,11 @@ class ModelView(ListModelMixin, GenericViewSet):
 
     def get_serializer_class(self):
         params = self.get_params()
-        app_name = params.get('app_name')
-        model_name = params.get('model_name')
-
+        chooser_name = params.get('chooser')
+        chooser = get_chooser_options(chooser_name)
+        app_name, model_name = chooser['content_type'].split('.')
         cls = apps.get_model(app_name, model_name)
+
         if hasattr(cls, 'get_model_serializer_class'):
             return cls.get_model_serializer_class()
 

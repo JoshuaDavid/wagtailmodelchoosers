@@ -21,6 +21,7 @@ class BaseModelChooserPanel(BaseChooserPanel):
     def widget_overrides(cls):
         return {
             cls.field_name: ModelChooserWidget(
+                cls.chooser,
                 cls.target_model(),
                 required=cls.get_required(),
                 label=cls.label,
@@ -57,6 +58,7 @@ class ModelChooserPanel(object):
         return type(str('_ModelChooserPanel'), (BaseModelChooserPanel,), {
             'model': model,
             'field_name': self.field_name,
+            'chooser': self.chooser,
             'label': self.label,
             'display': self.display,
             'list_display': self.list_display,
