@@ -17,7 +17,7 @@ class ModelChooserBlock(ChooserBlock):
 
         self.chooser = chooser
         self.content_type = options.pop('content_type')
-        self.can_allow_create = options.pop('can_allow_create')
+        self.can_allow_create = options.pop('can_allow_create', False)
         self.label = options.pop('label', chooser)
         self.display = options.pop('display', 'title')
         self.list_display = options.pop('list_display', list(flatten([self.display])))

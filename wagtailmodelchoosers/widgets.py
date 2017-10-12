@@ -33,9 +33,9 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
 
         super(ModelChooserWidget, self).__init__(**kwargs)
 
-    @cached_property
+    @property
     def target_model(self):
-        if isinstance(self._target_model, str):
+        if isinstance(self._target_model, basestring):
             return apps.get_model(self._target_model)
 
         else:

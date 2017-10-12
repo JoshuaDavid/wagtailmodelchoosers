@@ -92,7 +92,7 @@ def first_non_empty(data_or_instance, field_or_fields, default=None):
         obj = data_or_instance
 
     # Find the first non-empty.
-    if isinstance(field_or_fields, str):
+    if isinstance(field_or_fields, basestring):
         return getattr(obj, field_or_fields, default)
 
     elif isinstance(field_or_fields, (tuple, list)):
