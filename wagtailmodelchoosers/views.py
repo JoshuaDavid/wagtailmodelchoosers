@@ -34,10 +34,7 @@ class ModelView(ListModelMixin, GenericViewSet):
         if hasattr(cls, 'SEARCH_FIELDS'):
             queries = [Q(**{search_field: search}) for search_field in cls.SEARCH_FIELDS]
         else:
-            search_fields = [
-                field.name for field in cls._meta.get_fields()
-                if isinstance(field, CharField)]
-            for field in search_fields:
+            for field in cls._meta.get_fields():
                 if isinstance(field, CharField):
                     kwargs = {}
                     param_name = '%s__icontains' % field.name
