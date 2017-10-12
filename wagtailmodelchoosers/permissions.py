@@ -18,11 +18,5 @@ class IsRegisteredModelChooserModel(BasePermission):
 
     def has_permission(self, request, view):
         params = request.parser_context.get('kwargs')
-        app_name = params.get('app_name')
-        model_name = params.get('model_name')
-
-        model_path = u'{}.{}'.format(app_name, model_name)
-        return model_path in self.configured_model_chooser_models()
-
-    def configured_model_chooser_models(self):
-        return [chooser['content_type'] for chooser in settings.MODEL_CHOOSERS_OPTIONS.values()]
+        chooser_name = params.get('chooser')
+        return chooser_name in settings.MODEL_CHOOSERS_OPTIONS

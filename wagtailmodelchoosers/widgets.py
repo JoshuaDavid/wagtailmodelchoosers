@@ -17,7 +17,8 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
     is_hidden = True
     template_name = 'wagtailmodelchoosers/widgets/model_chooser.html'
 
-    def __init__(self, target_model, display, list_display, required=True, **kwargs):
+    def __init__(self, chooser, target_model, display, list_display, required=True, **kwargs):
+        self.chooser = chooser
         self.required = required
         self._target_model = target_model
         self.label = kwargs.pop('label', self.get_class_name()[1])
@@ -78,10 +79,8 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
                 return result
 
     def get_endpoint(self):
-        app, class_name = self.get_class_name()
-
         from django.core.urlresolvers import reverse
-        return reverse('wagtailmodelchoosers_api_model', args=[app, class_name])
+        return reverse('wagtailmodelchoosers_api_model', args=[self.chooser])
 
     def get_create_endpoint(self):
         if self.can_allow_create is not True:

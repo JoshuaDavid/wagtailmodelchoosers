@@ -27,7 +27,7 @@ def wagtailmodelchoosers_admin_js():
 def wagtailmodelchoosers_admin_urls():
     return [
         url(
-            r'^modelchoosers/api/v1/model/(?P<app_name>[\w-]+).(?P<model_name>\w+)',
+            r'^modelchoosers/api/v1/model/(?P<chooser>[\w-]+)',
             ModelView.as_view({'get': 'list'}),
             name='wagtailmodelchoosers_api_model'
         ),

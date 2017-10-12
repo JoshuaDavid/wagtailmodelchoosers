@@ -36,6 +36,7 @@ class ModelChooserBlock(ChooserBlock):
     @cached_property
     def widget(self):
         return ModelChooserWidget(
+            self.chooser,
             self.target_model,
             required=self._required,
             label=self.label,
