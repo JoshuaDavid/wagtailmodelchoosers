@@ -68,7 +68,7 @@ The ModelChooser and RemoteModelChooser share a similar base configuration and o
             ],
             'content_type': 'core.Navigation',                       # ONLY FOR MODEL: The django content type of the model
             'can_allow_create': True,                                # ONLY FOR MODEL: If a link to create an instance via django admin should be inserted
-            'filter_fields': {'owner__isnull': True},                # ONLY FOR MODEL: Optional, allow custom filers to be applied to all searches for this chooser
+            'extra_filter_method': lambda queryset: queryset.live(), # ONLY FOR MODEL: Optional, allow custom filter method to be applied to all searches for this chooser
             'fields_to_save': ['id'] + RATE_CHOOSER_DISPLAY_FIELDS,  # ONLY FOR REMOTE: The remote objects fields to save to the DB. Leave empty to save the whole object.
             'remote_endpoint': 'http://...'                          # ONLY FOR REMOTE: The remote API endpoint.
             'pk_name': 'uuid',                                       # The primary key name of the model
