@@ -62,8 +62,8 @@ class ModelView(ListModelMixin, GenericViewSet):
 
         return queryset
 
-    def do_extra_filter(self, queryset, extra_filter_fields):
-        return queryset.filter(**extra_filter_fields)
+    def do_extra_filter(self, queryset, extra_filter_method):
+        return extra_filter_method(queryset)
 
     def get_queryset(self):
         params = self.get_params()
@@ -72,11 +72,11 @@ class ModelView(ListModelMixin, GenericViewSet):
         app_name, model_name = chooser['content_type'].split('.')
         cls = apps.get_model(app_name, model_name)
 
-        extra_filter_fields = chooser.get('extra_filter_fields')
+        extra_filter_method = chooser.get('extra_filter_method')
 
         queryset = cls.objects.all()
-        if extra_filter_fields:
-            queryset = self.do_extra_filter(queryset, extra_filter_fields)
+        if extra_filter_method:
+            queryset = self.do_extra_filter(queryset, extra_filter_method)
         queryset = self.do_search(cls, queryset)
         queryset = self.do_filter(cls, queryset)
 
