@@ -63,7 +63,7 @@ class ModelView(ListModelMixin, GenericViewSet):
         return queryset
 
     def do_extra_filter(self, queryset, extra_filter_method):
-        return extra_filter_method(queryset)
+        return extra_filter_method(self.request, queryset)
 
     def get_queryset(self):
         params = self.get_params()
