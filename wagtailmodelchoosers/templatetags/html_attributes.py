@@ -23,10 +23,10 @@ def html_attributes(attrs, exclude=None):
         exclude = []
     elif isinstance(exclude, str):
         exclude = exclude.split(',')
-    exclude = list(map(lambda e: e.strip().lower(), exclude))
+    exclude = list([e.strip().lower() for e in exclude])
 
     html_attrs = []
-    for key, val in attrs.items():
+    for key, val in list(attrs.items()):
         if key.lower() in exclude:
             continue
 

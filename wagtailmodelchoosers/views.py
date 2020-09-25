@@ -1,7 +1,8 @@
+import requests
+import string
+
 from django.apps import apps
 from django.db.models import Q, CharField
-
-import requests
 
 from rest_framework import filters, serializers
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
@@ -26,30 +27,36 @@ class ModelView(ListModelMixin, GenericViewSet):
         return self.request.parser_context.get('kwargs')
 
     def do_search(self, cls, queryset):
-        search = self.request.query_params.get('search', None)
-        if not search:
+        """
+        Comma-delimited search for neighborhood w/ city, state
+        """
+        search_value = self.request.query_params.get('search', None)
+        if not search_value:
             return queryset
 
-        queries = []
+        query_list = [str.strip() for str in str(search_value).split(',')]
         if hasattr(cls, 'SEARCH_FIELDS'):
-            queries = [Q(**{search_field: search}) for search_field in cls.SEARCH_FIELDS]
-        else:
-            for field in cls._meta.get_fields():
-                if isinstance(field, CharField):
-                    kwargs = {}
-                    param_name = '%s__icontains' % field.name
-                    kwargs[param_name] = search
-                    queries.append(Q(**kwargs))
+            query = Q()
+            for search_field in cls.SEARCH_FIELDS:
+                for query_value in query_list:
+                    query = query | Q(**{search_field: query_value})
+            return queryset.filter(query)
+
+        queries = []
+        search_fields = [field.name for field in cls._meta.get_fields() if isinstance(field, CharField)]  # NOQA
+        for field_name in search_fields:
+            kwargs = {}
+            param_name = '%s__icontains' % field_name
+            kwargs[param_name] = search_value
+            queries.append(Q(**kwargs))
 
         if len(queries):
             query = queries.pop()
-
             for item in queries:
                 query |= item
-
             return queryset.filter(query)
-        else:
-            return queryset
+
+        return queryset
 
     def do_filter(self, cls, queryset):
         for field in getattr(cls, 'rest_framework_filter_fields', []):
@@ -127,7 +134,7 @@ class RemoteResourceView(ViewSet):
 
         # Apply options.
         query_keys_map = get_query_keys_map(chooser_options)
-        for chooser_key, remote_key in query_keys_map.items():
+        for chooser_key, remote_key in list(query_keys_map.items()):
             value = self.request.query_params.get(chooser_key)
             if value is not None:
                 url_params[remote_key] = value
@@ -154,7 +161,7 @@ class RemoteResourceView(ViewSet):
         }
 
         # Only include the other keys if they exists.
-        for chooser_key, remote_key in response_keys_map.items():
+        for chooser_key, remote_key in list(response_keys_map.items()):
             # Do not overwrite already present keys.
             if chooser_key in data:
                 continue

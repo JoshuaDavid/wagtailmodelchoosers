@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import Autosuggest from 'react-autosuggest';
+import debounce from './debounce';
 
 const getSuggestionValue = suggestion => suggestion.name;
 const renderSuggestion = () => null;
@@ -27,7 +28,7 @@ class AutoComplete extends Component {
     };
 
     this.loadSuggestions = this.loadSuggestions.bind(this);
-    this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+    this.onSuggestionsUpdateRequested = debounce(this.onSuggestionsUpdateRequested.bind(this), 300);
     this.onChange = this.onChange.bind(this);
   }
 

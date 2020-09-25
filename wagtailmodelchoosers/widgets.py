@@ -35,7 +35,7 @@ class ModelChooserWidget(WidgetWithScript, widgets.Input):
 
     @property
     def target_model(self):
-        if isinstance(self._target_model, basestring):
+        if isinstance(self._target_model, str):
             return apps.get_model(self._target_model)
 
         else:

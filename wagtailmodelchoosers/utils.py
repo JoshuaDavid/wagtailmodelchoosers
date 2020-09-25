@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 try:
-    basestring  # noqa: F821
+    str  # noqa: F821
 except NameError:
     # Python 3
     def is_list(obj):
@@ -13,7 +13,7 @@ except NameError:
 else:
     # Python 2
     def is_list(obj):
-        return isinstance(obj, collections.Sequence) and not isinstance(obj, basestring)  # noqa: F821
+        return isinstance(obj, collections.Sequence) and not isinstance(obj, str)  # noqa: F821
 
 
 def flatten(list_):
@@ -57,7 +57,7 @@ def get_chooser_options(chooser):
         missing_fields = [field for field in display if field not in fields_to_save]
 
         if missing_fields:
-            missing_fields = ', '.join(map(lambda f: '`{}`'.format(f), missing_fields))
+            missing_fields = ', '.join(['`{}`'.format(f) for f in missing_fields])
             raise ImproperlyConfigured((
                 'Invalid `fields_to_save` definition for chooser `{}`, '
                 'it should contain at least all the fields from `display` and is currently missing: {}'
@@ -92,7 +92,7 @@ def first_non_empty(data_or_instance, field_or_fields, default=None):
         obj = data_or_instance
 
     # Find the first non-empty.
-    if isinstance(field_or_fields, basestring):
+    if isinstance(field_or_fields, str):
         return getattr(obj, field_or_fields, default)
 
     elif isinstance(field_or_fields, (tuple, list)):

@@ -8,7 +8,7 @@ class IsWagtailAdmin(BasePermission):
 
     @property
     def _permission(self):
-        return u'wagtailadmin.access_admin'
+        return 'wagtailadmin.access_admin'
 
     def has_permission(self, request, view):
         return request.user.is_authenticated() and request.user.has_perm(self._permission)
